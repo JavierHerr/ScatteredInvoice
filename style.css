@@ -158,3 +158,17 @@ footer { color: var(--muted); text-align: center; padding: 2.5rem 1rem 4rem; }
   .hero-content { margin-top: 4rem; }
   .meta-grid, .split, .findings-grid, .recommendation-grid { grid-template-columns: 1fr; }
 }
+
+.hero {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #0a0a0a;
+}
+
+.hero-img {
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+}
