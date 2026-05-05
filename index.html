@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Threat Hunt Report | Scattered Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <span class="brand">Threat Hunt Report</span>
+      <a href="#findings">Findings</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#mitre">MITRE</a>
+      <a href="#recommendations">Recommendations</a>
+    </nav>
+    <section class="hero-content">
+      <p class="eyebrow">Business Email Compromise Investigation</p>
+      <h1>Scattered Invoice</h1>
+      <p class="subtitle">A threat hunt into MFA fatigue, mailbox persistence, and attempted wire-transfer fraud.</p>
+      <div class="meta-grid">
+        <div><span>Date Reported</span><strong>February 26, 2026 · 09:30 UTC</strong></div>
+        <div><span>Analyst</span><strong>Your Name</strong></div>
+        <div><span>Case ID</span><strong>TH-BEC-001</strong></div>
+        <div><span>Status</span><strong>Completed</strong></div>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="card executive">
+      <h2>Executive Summary</h2>
+      <p>
+        On February 26, 2026, Mark Smith received repeated multi-factor authentication prompts and eventually approved one. The approval allowed an attacker to access Mark's mailbox from an unfamiliar IP address and location. Shortly after gaining access, the attacker attempted a Business Email Compromise scheme by sending a wire transfer request for <strong>$24,500</strong> to the finance department. The bank detected and froze the transaction before the funds were lost.
+      </p>
+      <p>
+        The hunt identified MFA fatigue as the initial access method, malicious mailbox rule creation for persistence and defense evasion, access to Outlook Web, OneDrive for Business, and SharePoint Online, and attempted internal financial fraud from the compromised account.
+      </p>
+    </section>
+
+    <section class="split">
+      <article class="card">
+        <h2>Objective</h2>
+        <p>Determine how MFA was bypassed, identify the compromised account, reconstruct attacker activity, and document evidence of persistence, fraud activity, and cloud application access.</p>
+      </article>
+      <article class="card">
+        <h2>Hypothesis</h2>
+        <p>An attacker may have used MFA push fatigue to obtain valid access, then used the compromised mailbox to create forwarding and deletion rules before launching a BEC wire-transfer attempt.</p>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Scope</h2>
+      <ul class="scope-list">
+        <li><strong>Time Window:</strong> 2 hours</li>
+        <li><strong>Accounts:</strong> 1 compromised account</li>
+        <li><strong>Data Sources:</strong> SigninLogs, CloudAppEvents, EmailEvents</li>
+        <li><strong>Environment:</strong> Microsoft 365 / Entra ID / Exchange Online</li>
+      </ul>
+    </section>
+
+    <section id="findings" class="section-heading">
+      <p class="eyebrow">Investigation Results</p>
+      <h2>Key Findings</h2>
+    </section>
+
+    <section class="findings-grid">
+      <article class="finding critical">
+        <div class="finding-head"><span>Finding 1</span><strong>Critical</strong></div>
+        <h3>Compromised Account Identified</h3>
+        <p>The compromised user was <strong>Mark Smith</strong>, with the alternate sign-in name <code>m.smith@lognpacific.org</code>.</p>
+        <p class="assessment">Assessment: Confirmed account compromise.</p>
+      </article>
+
+      <article class="finding critical">
+        <div class="finding-head"><span>Finding 2</span><strong>Critical</strong></div>
+        <h3>MFA Fatigue Led to Successful Sign-In</h3>
+        <p>The attacker triggered repeated MFA prompts. After <strong>4 failed/unsuccessful prompts</strong>, one MFA request was approved and the attacker gained access.</p>
+        <p class="assessment">Assessment: Confirmed MFA fatigue attack.</p>
+      </article>
+
+      <article class="finding high">
+        <div class="finding-head"><span>Finding 3</span><strong>High</strong></div>
+        <h3>Suspicious Source IP and Location</h3>
+        <p>Normal activity used <code>172.175.65.103</code>. The suspicious sign-in used <code>205.147.16.190</code> from the <strong>Netherlands</strong>, outside Mark's normal activity pattern.</p>
+        <p class="assessment">Assessment: Anomalous sign-in confirmed.</p>
+      </article>
+
+      <article class="finding high">
+        <div class="finding-head"><span>Finding 4</span><strong>High</strong></div>
+        <h3>Attacker Environment Was Unusual</h3>
+        <p>The attacker used <strong>Linux</strong> and <strong>Mozilla Firefox 147.0</strong>, which differed from the corporate Windows baseline.</p>
+        <p class="assessment">Assessment: Device and browser anomalies support malicious access.</p>
+      </article>
+
+      <article class="finding critical">
+        <div class="finding-head"><span>Finding 5</span><strong>Critical</strong></div>
+        <h3>Mailbox Reconnaissance and Persistence</h3>
+        <p>The first post-authentication action was <code>MailItemsAccessed</code>. The attacker then created inbox rules to forward invoice-related messages and hide security warnings.</p>
+        <p class="assessment">Assessment: Confirmed mailbox collection and persistence.</p>
+      </article>
+
+      <article class="finding critical">
+        <div class="finding-head"><span>Finding 6</span><strong>Critical</strong></div>
+        <h3>Business Email Compromise Attempt</h3>
+        <p>The attacker sent a finance-related request from the compromised account. The email was intra-organizational and the sender IP matched the attacker IP.</p>
+        <p class="assessment">Assessment: Confirmed attempted BEC fraud.</p>
+      </article>
+    </section>
+
+    <section id="timeline" class="card">
+      <h2>Attack Timeline</h2>
+      <div class="timeline">
+        <div><span></span><p><strong>Normal sign-in activity</strong><br>Mark's legitimate activity observed from <code>172.175.65.103</code>.</p></div>
+        <div><span></span><p><strong>MFA prompt activity</strong><br>Attacker initiates repeated MFA prompts against Mark's account.</p></div>
+        <div><span></span><p><strong>Successful attacker sign-in</strong><br>Suspicious sign-in from <code>205.147.16.190</code> in the Netherlands after MFA approval.</p></div>
+        <div><span></span><p><strong>Mailbox access</strong><br>First post-auth action recorded as <code>MailItemsAccessed</code>.</p></div>
+        <div><span></span><p><strong>Inbox rules created</strong><br>Rules named <code>.</code> and <code>..</code> created for forwarding and deletion.</p></div>
+        <div><span></span><p><strong>BEC attempt</strong><br>Finance department receives a wire-transfer request for <strong>$24,500</strong>.</p></div>
+        <div><span></span><p><strong>Funds frozen</strong><br>The bank detects the transaction and freezes the funds.</p></div>
+      </div>
+    </section>
+
+    <section class="split">
+      <article class="card">
+        <h2>Indicators of Compromise</h2>
+        <ul class="ioc-list">
+          <li><span>Compromised User</span><code>m.smith@lognpacific.org</code></li>
+          <li><span>Legitimate IP</span><code>172.175.65.103</code></li>
+          <li><span>Attacker IP</span><code>205.147.16.190</code></li>
+          <li><span>Forwarding Address</span><code>insights@ducks.com</code></li>
+          <li><span>Rule Names</span><code>.</code> <code>..</code></li>
+          <li><span>Applications</span><code>Outlook Web</code> <code>OneDrive</code> <code>SharePoint</code></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Mailbox Rules</h2>
+        <p><strong>Forwarding rule:</strong> Named <code>.</code>, forwarding emails to <code>insights@ducks.com</code> when messages included keywords such as invoice, payment, and wire transfer.</p>
+        <p><strong>Deletion rule:</strong> Named <code>..</code>, deleting messages containing suspicious, security, phishing, unusual, compromised, and verify.</p>
+      </article>
+    </section>
+
+    <section id="mitre" class="card">
+      <h2>MITRE ATT&CK Mapping</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tactic</th><th>Technique</th><th>ID</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Initial Access</td><td>Multi-Factor Authentication Request Generation</td><td>T1621</td></tr>
+            <tr><td>Collection</td><td>Email Collection</td><td>T1114</td></tr>
+            <tr><td>Collection</td><td>Email Collection: Remote Email Collection</td><td>T1114.002</td></tr>
+            <tr><td>Persistence</td><td>Email Forwarding Rule</td><td>T1114.003</td></tr>
+            <tr><td>Defense Evasion</td><td>Indicator Removal / Email Deletion</td><td>T1070</td></tr>
+            <tr><td>Valid Accounts</td><td>Cloud Accounts</td><td>T1078.004</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Impact Assessment</h2>
+      <p><strong>Risk Level:</strong> Critical</p>
+      <p>The attacker gained access to a valid Microsoft 365 account, accessed mailbox content, created hidden forwarding and deletion rules, accessed cloud applications, and attempted invoice fraud against the finance department. Financial loss was prevented, but the mailbox and related cloud activity should be treated as compromised.</p>
+    </section>
+
+    <section class="card">
+      <h2>Actions Taken</h2>
+      <ul>
+        <li>Identified the compromised account and attacker IP address.</li>
+        <li>Correlated SigninLogs, CloudAppEvents, and EmailEvents.</li>
+        <li>Confirmed MFA fatigue behavior and successful attacker authentication.</li>
+        <li>Identified malicious mailbox forwarding and deletion rules.</li>
+        <li>Confirmed attempted BEC activity from the compromised account.</li>
+      </ul>
+    </section>
+
+    <section id="recommendations" class="card recommendations">
+      <h2>Recommendations</h2>
+      <div class="recommendation-grid">
+        <div><h3>Identity Security</h3><p>Revoke active sessions, reset credentials, enforce Conditional Access, and require phishing-resistant MFA or number matching.</p></div>
+        <div><h3>Email Security</h3><p>Disable or tightly control external auto-forwarding and alert on newly created inbox rules.</p></div>
+        <div><h3>Detection Engineering</h3><p>Create detections for repeated MFA prompts followed by success, new foreign sign-ins, and suspicious mailbox rule creation.</p></div>
+        <div><h3>User Awareness</h3><p>Train users to report unexpected MFA prompts and repeated authentication requests immediately.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Conclusion</h2>
+      <p>The threat hunt confirmed that the attacker bypassed MFA through push fatigue, accessed Mark Smith's mailbox, created persistence and evasion rules, and attempted financial fraud. The organization should immediately strengthen MFA controls, fix Conditional Access policy gaps, monitor mailbox rule creation, and hunt for similar activity across other accounts.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Threat Hunt Project Page • Built for GitHub Pages</p>
+  </footer>
+</body>
+</html>
